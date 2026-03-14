@@ -1,0 +1,12 @@
+---
+// Parte de JS/Metadata
+const { title} = Astro.props;
+---
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>{title}</title>
+  </head>
+  <body class="bg-slate-100 text-gray-900">
+    <slot /> </body>
+</html>

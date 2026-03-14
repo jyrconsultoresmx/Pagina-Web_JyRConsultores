@@ -1,0 +1,55 @@
+---
+import { Image } from 'astro:assets';
+import logoImg from '../assets/LOGO_5.png'; 
+---
+
+<nav id="main-nav" class="fixed top-0 w-full z-50 bg-linear-to-b from-[#112A40] to-[#537FA6] border-gray-200 transition-all duration-300 py-2">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+    
+    <div class="shrink-0">
+      <a href="/" class="block">
+        <Image 
+          src={logoImg} 
+          alt="J&R Consultores" 
+          id="nav-logo"
+          class="h-20 w-auto transition-all duration-300"
+          loading = "eager" 
+        />
+      </a>
+    </div>
+
+    <div class="hidden md:block">
+      <div class="ml-10 flex items-baseline space-x-8 font-medium">
+        <a href="#inicio" class="text-white hover:text-blue-2S00 px-3 py-2 transition-colors">Inicio</a>
+        <a href="#servicios" class="text-white hover:text-blue-600 px-3 py-2 transition-colors">Servicios</a>
+        <a href="#nosotros" class="text-white hover:text-blue-600 px-3 py-2 transition-colors">Nosotros</a>
+        <a href="#contacto" class="bg-[#537FA6] text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-all">Contacto</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const nav = document.querySelector('#main-nav') as HTMLElement;
+  const logo = document.querySelector('#nav-logo') as HTMLElement;
+
+  if (nav && logo) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        // Estado contraído
+        nav.classList.remove('py-2');
+        nav.classList.add('py-0.1', 'shadow-md');
+        
+        logo.classList.remove('h-12');
+        logo.classList.add('h-8');
+      } else {
+        // Estado original (arriba del todo)
+        nav.classList.remove('py-0.1', 'shadow-md');
+        nav.classList.add('py-2');
+        
+        logo.classList.remove('h-8');
+        logo.classList.add('h-12');
+      }
+    });
+  }
+</script>

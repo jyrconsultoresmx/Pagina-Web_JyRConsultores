@@ -1,17 +1,36 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="J&R Consultores">
+  <Navbar />
+  
+  <section id="inicio" class="py-30 px-70 text-center">
+    <h1 class="mb-5 text-4xl font-bold tracking-tight text-heading md:text-5xl lg:text-6xl">Soluciones fiscales claras para desiciones inteligentes</h1>
+    <p class="text-lg font-normal text-body lg:text-2xl">Asesoria fiscal y administrativa para personas físicas y morales con un enfoque preventivo y estratégico.</p>
+    <button type="button" class="text- bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-full text-sm px-4 py-2.5 focus:outline-none">Agenda una consulta</button>
+  </section>
+
+  <section id="" class="max-w-5xl mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <Card 
+        title="Consultoría Legal" 
+        description="Protegemos tus intereses con el mejor equipo legal." 
+      />
+      <Card 
+        title="Gestión Contable" 
+        description="Llevamos tus números al siguiente nivel de eficiencia." 
+      />
+      <Card 
+        title="Estrategia Digital" 
+        description="Hacemos que tu marca destaque en el mundo moderno." 
+      />
+    </div>
+  </section>
+  
+  <Footer />
+</Layout>
