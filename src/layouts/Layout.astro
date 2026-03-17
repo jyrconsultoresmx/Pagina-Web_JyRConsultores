@@ -1,5 +1,4 @@
 ---
-// Parte de JS/Metadata
 const { title } = Astro.props;
 import { Toaster } from "sonner";
 ---
@@ -8,13 +7,11 @@ import { Toaster } from "sonner";
   <head>
     <meta charset="utf-8" />
     <title>{title}</title>
-    <!-- AOS CSS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   </head>
   <body class="bg-slate-100 text-gray-900 overflow-x-hidden">
     <slot />
     <Toaster position="top-right" richColors />
-    <!-- AOS JS -->
     <script is:inline src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script is:inline>
       AOS.init({
