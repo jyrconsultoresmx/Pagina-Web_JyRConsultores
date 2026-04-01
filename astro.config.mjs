@@ -18,6 +18,6 @@ export default defineConfig({
       lucide: ['*'], // Si decides usar los que te pasé antes
     },
   }), react()],
-  output: 'server',
+  output: 'static',
   adapter: netlify(),
 });
