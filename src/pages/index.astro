@@ -222,7 +222,7 @@ const valoresEmpresa = [
     </div>
   </section>
 
-  <section id="por-que-nosotros" class="relative w-full bg-slate-50 py-24 lg:py-32 overflow-hidden">
+  <section id="por-que-nosotros" class="relative w-full bg-slate-50 py-24 lg:py-32 overflow-hidden" data-aos-offset="0">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:20px_20px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30"></div>
   
     <div class="relative z-10 max-w-7xl mx-auto px-6">
@@ -258,6 +258,12 @@ const valoresEmpresa = [
               src={imagen2}
               alt="Excelencia en consultoría"
               class="w-full h-[500px] object-cover"
+              loading="lazy"
+              decoding="async"
+              widths={[400, 800, 1000]}
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              format="webp"
+              quality={80}
             />
             <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
           </div>

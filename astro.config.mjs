@@ -10,6 +10,10 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
+  build:{
+    inlineStylesheets: 'always'
+  },
+  
   site: 'https://jyrconsultoresmx.com/',
   vite: {
     plugins: [tailwindcss()],
