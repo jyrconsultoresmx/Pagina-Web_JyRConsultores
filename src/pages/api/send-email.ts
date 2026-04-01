@@ -5,8 +5,8 @@ export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
     try {
-        const apiKey = import.meta.env.RESEND_API_KEY;
-        const turnstileSecret = import.meta.env.TURNSTILE_SECRET_KEY;
+        const apiKey = process.env.RESEND_API_KEY;
+        const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
 
         if (!apiKey || !turnstileSecret) {
             throw new Error("Faltan variables de entorno críticas.");
