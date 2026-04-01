@@ -56,12 +56,13 @@ import 'aos/dist/aos.css';
 
     <script>
       import AOS from 'aos';
-      
-      document.addEventListener('DOMContentLoaded', () => {
+    
+      window.requestAnimationFrame(() => {
         AOS.init({
           duration: 800,
           once: true,
           offset: 50,
+          disable: 'mobile'
         });
       });
     </script>
