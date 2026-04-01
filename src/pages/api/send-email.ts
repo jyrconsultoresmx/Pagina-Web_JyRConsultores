@@ -1,34 +1,29 @@
 import type { APIRoute } from "astro";
 import { Resend } from 'resend';
 
-
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
     try {
-
-       // 2. Extracción ESTRICTA en Runtime (Cero import.meta.env)
-        const apiKey = process.env.RESEND_API_KEY;
-        const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+        const apiKey = import.meta.env.RESEND_API_KEY;
+        const turnstileSecret = import.meta.env.TURNSTILE_SECRET_KEY;
 
         if (!apiKey || !turnstileSecret) {
-            throw new Error("Faltan variables de entorno críticas (Resend o Turnstile).");
+            throw new Error("Faltan variables de entorno críticas.");
         }
-        console.log("✅ [API] Datos del formulario recibidos");
+
         const resend = new Resend(apiKey);
         const data = await request.formData();
         
         const turnstileToken = data.get('cf-turnstile-response')?.toString();
         
         if (!turnstileToken) {
-            console.warn("⚠️ [API] Token de Turnstile faltante");
             return new Response(JSON.stringify({
                 success: false,
                 message: "Validación de seguridad requerida."
             }), { status: 400 });
         }
 
-        console.log("🔒 [API] Verificando token con Cloudflare...");
         const cfVerifyResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
             method: 'POST',
             headers: {
@@ -40,15 +35,21 @@ export const POST: APIRoute = async ({ request }) => {
         const cfVerifyResult = await cfVerifyResponse.json();
 
         if (!cfVerifyResult.success) {
-            console.warn("❌ [API] Cloudflare rechazó el token:", cfVerifyResult['error-codes']);
+            const errorCodes = cfVerifyResult['error-codes'] || [];
+            let errorMessage = "Validación de seguridad fallida. Sistema anti-spam activado.";
+
+            if (errorCodes.includes('timeout-or-duplicate')) {
+                errorMessage = "Tu sesión ha expirado por inactividad. Por favor, recarga la página e intenta de nuevo.";
+            } else if (errorCodes.includes('missing-input-response') || errorCodes.includes('invalid-input-response')) {
+                errorMessage = "No se pudo verificar la prueba de seguridad. Asegúrate de tener JavaScript habilitado.";
+            }
+
             return new Response(JSON.stringify({
                 success: false,
-                message: "Validación de seguridad fallida."
+                message: errorMessage
             }), { status: 403 });
         }
 
-        console.log("✅ [API] Humano verificado por Cloudflare. Procediendo al envío...");
-        
         const nombre = data.get('nombre')?.toString();
         const email = data.get('email')?.toString();
         const telefono = data.get('telefono')?.toString();
@@ -69,15 +70,15 @@ export const POST: APIRoute = async ({ request }) => {
         }
 
         const honeypot = data.get('fax_empresa')?.toString();
+        
         if (honeypot) {
-            console.warn("Bot detectado y bloqueado por Honeypot.");
             return new Response(JSON.stringify({ 
                 success: true, 
                 message: "Consulta enviada." 
             }), { status: 200 }); 
         }
 
-       const htmlContent = `
+        const htmlContent = `
             <!DOCTYPE html>
             <html lang="es">
             <head>
@@ -137,7 +138,19 @@ export const POST: APIRoute = async ({ request }) => {
             html: htmlContent,
         });
 
-        if (error) throw new Error(error.message);
+        if (error) {
+            let errorMessage = "No pudimos enviar tu mensaje. Por favor intenta más tarde.";
+            
+            if (error.name === 'rate_limit_exceeded' || error.message.toLowerCase().includes('rate limit')) {
+                 errorMessage = "Has enviado demasiadas solicitudes recientes. Por favor, espera un par de minutos antes de volver a intentar.";
+                 return new Response(JSON.stringify({
+                    success: false,
+                    message: errorMessage
+                }), { status: 429 });
+            }
+
+            throw new Error(errorMessage);
+        }
 
         return new Response(JSON.stringify({
             success: true,

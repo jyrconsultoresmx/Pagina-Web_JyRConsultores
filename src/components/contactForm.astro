@@ -229,35 +229,42 @@ const servicios = [
             const result = await response.json();
 
             if (response.ok && result.success) {
-                // Notificación Toast de ÉXITO
+                // ÉXITO
                 Toast.fire({
                     icon: 'success',
                     title: '¡Consulta enviada con éxito!',
-                    // Personalizamos la barra de progreso con el azul del sitio
                     willOpen: (toast) => {
                         const progressBar = toast.querySelector('.swal2-timer-progress-bar') as HTMLElement;
                         if (progressBar) progressBar.style.backgroundColor = '#3b82f6';
                     }
                 });
                 form.reset();
+                // Opcional: Resetear Turnstile para futuros envíos sin recargar
+                if (window.turnstile) { window.turnstile.reset(); }
             } else {
-                throw new Error(result.message || 'Error desconocido');
+                // Lanzamos el error con el mensaje EXACTO del backend
+                throw new Error(result.message || 'Error en el servidor. Intenta más tarde.');
             }
         } catch (error) {
-            // Notificación Toast de ERROR
+    if (error instanceof Error) {
+        Toast.fire({
+            icon: 'warning',
+            title: 'Aviso',
+            text: error.message, 
+            willOpen: (toast) => {
+                const progressBar = toast.querySelector('.swal2-timer-progress-bar') as HTMLElement;
+                if (progressBar) progressBar.style.backgroundColor = '#f59e0b';
+            }
+        });
+        } else {
+            
+            console.error("Un error desconocido ocurrió:", error);
             Toast.fire({
                 icon: 'error',
-                title: 'Hubo un error al enviar tu mensaje.',
-                text: 'Por favor intenta más tarde.',
-                willOpen: (toast) => {
-                    const progressBar = toast.querySelector('.swal2-timer-progress-bar') as HTMLElement;
-                    if (progressBar) progressBar.style.backgroundColor = '#ef4444';
-                }
+                title: 'Error',
+                text: 'Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo.'
             });
-        } finally {
-            // Restauración del botón
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Solicitar Asesoría";
         }
+    }
     });
 </script>
