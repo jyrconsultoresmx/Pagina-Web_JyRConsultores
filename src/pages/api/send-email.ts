@@ -7,23 +7,74 @@ export const prerender = false;
 export const POST: APIRoute = async ({ request }) => {
     try {
 
-        const apiKey = process.env.RESEND_API_KEY;
-        const resend = new Resend(apiKey);
+        const apiKey = import.meta.env.RESEND_API_KEY || process.env.RESEND_API_KEY;
+        const turnstileSecret = import.meta.env.TURNSTILE_SECRET_KEY || process.env.TURNSTILE_SECRET_KEY;
 
+        if (!apiKey || !turnstileSecret) {
+            throw new Error("Faltan variables de entorno críticas (Resend o Turnstile).");
+        }
+
+        console.log("✅ [API] Datos del formulario recibidos");
+        const resend = new Resend(apiKey);
         const data = await request.formData();
+        
+        const turnstileToken = data.get('cf-turnstile-response')?.toString();
+        
+        if (!turnstileToken) {
+            console.warn("⚠️ [API] Token de Turnstile faltante");
+            return new Response(JSON.stringify({
+                success: false,
+                message: "Validación de seguridad requerida."
+            }), { status: 400 });
+        }
+
+        console.log("🔒 [API] Verificando token con Cloudflare...");
+        const cfVerifyResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `secret=${encodeURIComponent(turnstileSecret)}&response=${encodeURIComponent(turnstileToken)}`,
+        });
+
+        const cfVerifyResult = await cfVerifyResponse.json();
+
+        if (!cfVerifyResult.success) {
+            console.warn("❌ [API] Cloudflare rechazó el token:", cfVerifyResult['error-codes']);
+            return new Response(JSON.stringify({
+                success: false,
+                message: "Validación de seguridad fallida."
+            }), { status: 403 });
+        }
+
+        console.log("✅ [API] Humano verificado por Cloudflare. Procediendo al envío...");
         
         const nombre = data.get('nombre')?.toString();
         const email = data.get('email')?.toString();
         const telefono = data.get('telefono')?.toString();
         const servicio = data.get('servicio')?.toString();
         const empresa = data.get('empresa')?.toString() || 'No especificada';
-        const mensaje = data.get('mensaje')?.toString();
+
+        const sanitizarTexto = (texto: string) => {
+            return texto.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        };
+
+        const mensaje = sanitizarTexto(data.get('mensaje')?.toString() || '');
 
         if (!nombre || !email || !telefono || !mensaje) {
             return new Response(JSON.stringify({
                 success: false,
                 message: "Faltan campos obligatorios."
             }), { status: 400 });
+        }
+
+        const honeypot = data.get('fax_empresa')?.toString();
+        if (honeypot) {
+            console.warn("Bot detectado y bloqueado por Honeypot.");
+            return new Response(JSON.stringify({ 
+                success: true, 
+                message: "Consulta enviada." 
+            }), { status: 200 }); 
         }
 
        const htmlContent = `
