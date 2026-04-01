@@ -7,13 +7,13 @@ export const prerender = false;
 export const POST: APIRoute = async ({ request }) => {
     try {
 
-        const apiKey = import.meta.env.RESEND_API_KEY || process.env.RESEND_API_KEY;
-        const turnstileSecret = import.meta.env.TURNSTILE_SECRET_KEY || process.env.TURNSTILE_SECRET_KEY;
+       // 2. Extracción ESTRICTA en Runtime (Cero import.meta.env)
+        const apiKey = process.env.RESEND_API_KEY;
+        const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
 
         if (!apiKey || !turnstileSecret) {
             throw new Error("Faltan variables de entorno críticas (Resend o Turnstile).");
         }
-
         console.log("✅ [API] Datos del formulario recibidos");
         const resend = new Resend(apiKey);
         const data = await request.formData();
