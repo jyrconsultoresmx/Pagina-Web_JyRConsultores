@@ -1,3 +1,4 @@
+
 // src/turnstile.d.ts
 export {};
 
@@ -7,4 +8,5 @@ declare global {
       reset(): void;
     };
   }
-}
+
+} 

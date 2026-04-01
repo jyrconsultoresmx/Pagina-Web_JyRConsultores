@@ -7,11 +7,13 @@ import 'aos/dist/aos.css';
 <html lang="es">
   <head>
     <meta charset="utf-8" />
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <link rel="icon" type="image/png" href="/LOGO_6.png">
-    
     <title>{title}</title>
 
     <meta name="description" content="Contadores en CDMX expertos en cumplimiento fiscal, gestión de ingresos mixtos y regularización ante el SAT. Prevención de riesgos para empresas y personas morales. ¡Agenda tu asesoría!" />
+    
     <meta property="og:title" content="Consultoría Contable y Fiscal en Ciudad de México" />
     <meta property="og:description" content="Expertos en impuestos y contabilidad para empresas y personas morales. Atención personalizada y resultados garantizados." />
     <meta property="og:type" content="website" />
@@ -45,25 +47,20 @@ import 'aos/dist/aos.css';
           ]
         }
       }
-    </script>
+      </script>
   </head>
   <body class="bg-slate-100 text-gray-900">
     <main class="overflow-x-hidden w-full">
         <slot />
     </main>
     
-    <Toaster position="top-right" richColors client:load />
-
-    <script>
-      import AOS from 'aos';
-    
-      window.requestAnimationFrame(() => {
-        AOS.init({
-          duration: 800,
-          once: true,
-          offset: 50,
-          disable: 'mobile'
-        });
+    <Toaster position="top-right" richColors />
+    <script is:inline src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script is:inline>
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 50,
       });
     </script>
   </body>

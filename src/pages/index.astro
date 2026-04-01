@@ -85,7 +85,7 @@ const valoresEmpresa = [
 ];
 ---
 
-<Layout title="Contadores en CDMX | Cumplimiento y Regularización Fiscal - J&R Consultores">
+<Layout title="Contadores en CDMX | Cumplimiento y Regularización Fiscal - J&R Consultores" />
   <Navbar />
 
   <section
@@ -98,11 +98,9 @@ const valoresEmpresa = [
         alt="Consultoría fiscal y decisiones inteligentes"
         class="w-full h-full object-cover"
         loading="eager"
-        width={1600}
         widths={[400, 800, 1200, 1600]}
-        sizes={`(max-width: 640px) 400px, (max-width: 1024px) 800px, 1600px`}
+        sizes={`(max-width:640px) 400px, (max-width: 1024px) 800px, 1600`}
         format="webp"
-        decoding="sync"
       />
     </div>
 
@@ -259,14 +257,7 @@ const valoresEmpresa = [
             <Image
               src={imagen2}
               alt="Excelencia en consultoría"
-              loading="lazy"
-              fetchpriority="high"
-              decoding="sync"
               class="w-full h-[500px] object-cover"
-              width={1000} 
-              widths={[400, 800, 1000]}
-              sizes="(max-width: 1024px) 100vw, 500px"
-              format="webp"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
           </div>
